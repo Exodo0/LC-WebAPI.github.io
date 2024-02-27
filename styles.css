@@ -40,6 +40,7 @@ body.dark-mode {
   margin-bottom: 20px;
   border-radius: 50%;
 }
+
 .info-message {
   background-color: #ffeeba;
   border: 1px solid #ffc107;
@@ -47,6 +48,7 @@ body.dark-mode {
   padding: 10px;
   margin-bottom: 20px;
 }
+
 .content {
   background-color: #fff;
   border-radius: 0 8px 8px 0;
@@ -125,4 +127,22 @@ button:hover {
 
 .result.dark-mode {
   border-color: #666;
+}
+
+@media only screen and (max-width: 600px) {
+  .sidebar {
+    width: 100%;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .logo img {
+    width: 100%;
+  }
+
+  .button-group {
+    flex-direction: row;
+  }
+}
+body {
+  overflow: hidden;
 }

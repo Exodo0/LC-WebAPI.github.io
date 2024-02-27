@@ -20,7 +20,7 @@
           <h1>Liberty County API Demo</h1>
           <div class="info-message">
             <p>
-              <strong>Note:</strong>The API key is not stored locally here, so
+              <strong>Note:</strong> The API key is not stored locally here, so
               please make sure to enter it each time you use the app.
             </p>
           </div>
@@ -37,6 +37,14 @@
               placeholder="Enter server command..."
             />
           </div>
+          <div class="input-group">
+            <label for="discordWebhook">Discord Webhook:</label>
+            <input
+              type="text"
+              id="discordWebhook"
+              placeholder="Enter Discord Webhook URL..."
+            />
+          </div>
           <div class="button-group">
             <button type="button" onclick="getServerInfo()">Server Info</button>
             <button type="button" onclick="getServerPlayers()">
@@ -44,6 +52,9 @@
             </button>
             <button type="button" onclick="submitServerCommand()">
               Submit Command
+            </button>
+            <button type="button" onclick="getCommandLogs()">
+              Command Logs
             </button>
           </div>
         </form>
