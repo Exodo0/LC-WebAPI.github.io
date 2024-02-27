@@ -19,6 +19,7 @@ body.dark-mode {
   max-width: 800px;
   margin: 0 auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  color: #333;
 }
 
 .sidebar {
@@ -39,7 +40,13 @@ body.dark-mode {
   margin-bottom: 20px;
   border-radius: 50%;
 }
-
+.info-message {
+  background-color: #ffeeba;
+  border: 1px solid #ffc107;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
 .content {
   background-color: #fff;
   border-radius: 0 8px 8px 0;
