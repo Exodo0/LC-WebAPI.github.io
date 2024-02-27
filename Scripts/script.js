@@ -1,4 +1,4 @@
-let apiKeyInput, resultDiv, ownerName, coOwnersNames;
+let apiKeyInput, resultDiv;
 
 document.addEventListener("DOMContentLoaded", () => {
   apiKeyInput = document.getElementById("apiKey");
@@ -20,7 +20,7 @@ async function getServerInfo() {
   if (!validateApiKey()) return;
 
   try {
-    const response = await fetch(
+    const response = await axios.get(
       "https://api.policeroleplay.community/v1/server",
       {
         headers: {
@@ -30,80 +30,29 @@ async function getServerInfo() {
       }
     );
 
-    const data = await response.json();
-    ownerName = await getUsernameFromId(data.OwnerId);
-    coOwnersNames = await getCoOwnersNames(data.CoOwnerIds || []);
+    const data = response.data;
 
     resultDiv.innerHTML = formatServerInfo(data);
   } catch (error) {
     console.error("Error fetching server info:", error);
-    resultDiv.innerText = "Error fetching server info.";
+    resultDiv.innerText = `Error fetching server info: ${error.response.data.message}`;
   }
-}
-
-async function getUsernameFromId(userId) {
-  try {
-    const response = await axios.get(
-      `https://users.roblox.com/v1/users/${userId}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const userData = response.data;
-    return userData?.displayName || "Unknown";
-  } catch (error) {
-    console.error(`Error fetching data for user ID ${userId}:`, error);
-    return "Unknown";
-  }
-}
-
-async function getCoOwnersNames(coOwnerIds) {
-  return await Promise.all(
-    coOwnerIds.map(async (coOwnerId) => {
-      try {
-        const response = await axios.get(
-          `https://users.roblox.com/v1/users/${coOwnerId}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        const coOwnerData = response.data;
-        return coOwnerData?.displayName || "Unknown";
-      } catch (error) {
-        console.error(
-          `Error fetching data for Co-Owner ID ${coOwnerId}:`,
-          error
-        );
-        return "Unknown";
-      }
-    })
-  );
 }
 
 function formatServerInfo(data) {
   const formattedData = `
-    <strong>Nombre del servidor:</strong> ${data.Name}<br>
-    <strong>Dueño:</strong> ${ownerName}<br>
-    <strong>Co-Dueños:</strong> ${
-      coOwnersNames.length > 0 ? coOwnersNames.join(", ") : "None"
-    }<br>
-    <strong>Jugadores actuales:</strong> ${data.CurrentPlayers}/${
+    <strong>Server Name:</strong> ${data.Name}<br>
+    <strong>Owner:</strong> ${data.OwnerId}<br>
+    <strong>Co-Owners:</strong> ${data.CoOwnerIds.join(", ")}<br>
+    <strong>Current Players:</strong> ${data.CurrentPlayers}/${
     data.MaxPlayers
   }<br>
-    <strong>Clave de acceso:</strong> ${data.JoinKey}<br>
-    <strong>Requisito de verificación de cuenta:</strong> ${
+    <strong>Join Key:</strong> ${data.JoinKey}<br>
+    <strong>Account Verification Requirement:</strong> ${
       data.AccVerifiedReq
     }<br>
-    <strong>Balance de equipos:</strong> ${
-      data.TeamBalance ? "Habilitado" : "Deshabilitado"
-    }
-  `;
+    <strong>Team Balance:</strong> ${data.TeamBalance ? "Enabled" : "Disabled"}
+`;
 
   return formattedData;
 }
@@ -113,7 +62,7 @@ async function getServerPlayers() {
   if (!validateApiKey()) return;
 
   try {
-    const response = await fetch(
+    const response = await axios.get(
       "https://api.policeroleplay.community/v1/server/players",
       {
         headers: {
@@ -123,9 +72,7 @@ async function getServerPlayers() {
       }
     );
 
-    const data = await response.json();
-
-    console.log(data);
+    const data = response.data;
 
     if (Array.isArray(data)) {
       resultDiv.innerHTML = formatServerPlayers(data);
@@ -134,7 +81,7 @@ async function getServerPlayers() {
     }
   } catch (error) {
     console.error("Error fetching server players:", error);
-    resultDiv.innerText = "Error fetching server players.";
+    resultDiv.innerText = `Error fetching server players: ${error.response.data.message}`;
   }
 }
 
@@ -159,13 +106,10 @@ async function submitServerCommand() {
   }
 
   try {
-    const response = await fetch(
+    const response = await axios.post(
       "https://api.policeroleplay.community/v1/server/command",
+      { command },
       {
-        method: "POST",
-        body: JSON.stringify({
-          command: command,
-        }),
         headers: {
           "server-key": apiKeyInput.value,
           "Content-Type": "application/json",
@@ -173,11 +117,11 @@ async function submitServerCommand() {
       }
     );
 
-    const data = await response.json();
+    const data = response.data;
     resultDiv.innerText = data.message;
   } catch (error) {
     console.error("Error executing command:", error);
-    resultDiv.innerText = "Error executing command.";
+    resultDiv.innerText = `Error executing command: ${error.response.data.message}`;
   }
 }
 
