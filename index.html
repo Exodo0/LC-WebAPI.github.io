@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Liberty County API Demo</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <div class="logo">
+          <img src="./Assets/Logo.gif" alt="Logo" />
+        </div>
+        <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+      </div>
+      <div class="content">
+        <form id="apiForm">
+          <h1>Liberty County API Demo</h1>
+          <div class="input-group">
+            <label for="apiKey">API Key:</label>
+            <input type="password" id="apiKey" placeholder="Enter API Key..." />
+          </div>
+          <div class="input-group">
+            <label for="serverCommand">Server Command:</label>
+            <input
+              type="text"
+              id="serverCommand"
+              placeholder="Enter server command..."
+            />
+          </div>
+          <div class="button-group">
+            <button type="button" onclick="getServerInfo()">
+              Get Server Info
+            </button>
+            <button type="button" onclick="getServerPlayers()">
+              Get Players
+            </button>
+            <button type="button" onclick="submitServerCommand()">
+              Submit Command
+            </button>
+          </div>
+        </form>
+        <div id="result" class="result"></div>
+      </div>
+    </div>
+    <script src="./Scripts/script.js"></script>
+  </body>
+</html>
