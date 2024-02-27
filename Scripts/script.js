@@ -74,7 +74,12 @@ async function getServerPlayers() {
 
     const data = response.data;
 
-    if (Array.isArray(data)) {
+    //En caso de recibir un array, sin usuarios conectados notificarlo
+
+    if (data.length === 0) {
+      resultDiv.innerText = "No players are currently connected to the server.";
+      return;
+    } else if (Array.isArray(data)) {
       resultDiv.innerHTML = formatServerPlayers(data);
     } else {
       resultDiv.innerText = `Error: ${data.message}`;
