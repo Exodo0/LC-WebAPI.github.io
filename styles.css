@@ -1,61 +1,94 @@
+:root {
+  --color-light-bg: #f5f5f5;
+  --color-dark-bg: #121212;
+  --color-light-text: #333;
+  --color-dark-text: #fff;
+  --color-input-bg-light: #fff;
+  --color-input-bg-dark: #333;
+  --color-primary: #3498db;
+  --color-primary-hover: #2980b9;
+  --color-info-bg: #ffeeba;
+  --color-info-border: #ffc107;
+}
+
 body {
-  font-family: "Arial", sans-serif;
-  background-color: #f5f5f5;
+  font-family: Arial, sans-serif;
+  background-color: var(--color-light-bg);
+  color: var(--color-light-text);
   margin: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
   transition: background-color 0.3s ease, color 0.3s ease;
+  /* overflow: hidden; */
+  background-image: url("./Assets/back.jpg");
+  background-size: auto;
+  background-position: center;
 }
 
 body.dark-mode {
-  background-color: #121212;
-  color: #fff;
+  background-color: var(--color-dark-bg);
+  color: var(--color-dark-text);
 }
 
-.container {
+header {
+  width: auto;
   display: flex;
-  max-width: 800px;
-  margin: 0 auto;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-  color: #333;
+  justify-content: center;
 }
 
 .sidebar {
-  background-color: #f5f5f5;
-  border-radius: 8px 0 0 8px;
+  background-color: transparent;
+  border-radius: 8px;
   padding: 20px;
   text-align: center;
   width: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #333;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.logo img {
+.sidebar img {
   width: 50%;
   height: auto;
   margin-bottom: 20px;
   border-radius: 50%;
 }
 
-.info-message {
-  background-color: #ffeeba;
-  border: 1px solid #ffc107;
+.toggle-dark-mode {
+  background-color: var(--color-primary);
+  color: var(--color-dark-text);
+  padding: 10px 20px;
+  border: none;
   border-radius: 4px;
-  padding: 10px;
-  margin-bottom: 20px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.toggle-dark-mode:hover {
+  background-color: var(--color-primary-hover);
 }
 
 .content {
-  background-color: #fff;
-  border-radius: 0 8px 8px 0;
+  background-color: var(--color-light-bg);
+  border-radius: 8px;
   padding: 20px;
-  text-align: center;
+  max-width: 800px;
+  width: 100%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease, color 0.3s ease;
-  flex-grow: 1;
+}
+
+.info-message {
+  background-color: var(--color-info-bg);
+  border: 1px solid var(--color-info-border);
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 20px;
 }
 
 form {
@@ -63,12 +96,12 @@ form {
   flex-direction: column;
   align-items: center;
   gap: 15px;
+  width: 100%;
 }
 
 h1 {
   font-size: 24px;
   margin-bottom: 10px;
-  color: #333;
 }
 
 .input-group {
@@ -81,7 +114,6 @@ h1 {
 label {
   margin-bottom: 5px;
   font-weight: bold;
-  color: #333;
 }
 
 input {
@@ -91,6 +123,14 @@ input {
   border-radius: 4px;
   width: calc(100% - 20px);
   box-sizing: border-box;
+  background-color: var(--color-input-bg-light);
+  color: var(--color-light-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-mode input {
+  background-color: var(--color-input-bg-dark);
+  color: var(--color-dark-text);
 }
 
 .button-group {
@@ -100,18 +140,19 @@ input {
 }
 
 button {
-  background-color: #3498db;
-  color: #fff;
+  background-color: var(--color-primary);
+  color: var(--color-dark-text);
   padding: 12px 20px;
   border: none;
-  border-radius: 4px;
+  color: white;
+  border-radius: 14px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: medium;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 button:hover {
-  background-color: #2980b9;
+  background-color: var(--color-primary-hover);
 }
 
 .result {
@@ -121,12 +162,13 @@ button:hover {
   border-radius: 4px;
   font-size: 14px;
   white-space: pre-wrap;
-  color: #333;
-  transition: border-color 0.3s ease, color 0.3s ease;
 }
 
-.result.dark-mode {
-  border-color: #666;
+body.dark-mode .content,
+body.dark-mode .info-message,
+body.dark-mode .result {
+  background-color: var(--color-dark-bg);
+  color: var(--color-dark-text);
 }
 
 @media only screen and (max-width: 600px) {
@@ -141,8 +183,6 @@ button:hover {
 
   .button-group {
     flex-direction: row;
+    flex-wrap: wrap;
   }
-}
-body {
-  overflow: hidden;
 }

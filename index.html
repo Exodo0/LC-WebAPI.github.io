@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta name="color-scheme" content="light" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
     <link rel="stylesheet" href="styles.css" />
     <title>Liberty County API Demo</title>
   </head>
   <body>
-    <div class="container">
+    <header>
       <div class="sidebar">
         <div class="logo">
-          <img src="./Assets/Logo.gif" alt="Logo" />
+          <img src="./Assets/Logo.gif" alt="Liberty County Logo" />
         </div>
-        <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+        <button class="toggle-dark-mode" onclick="toggleDarkMode()">
+          Toggle Dark Mode
+        </button>
       </div>
-      <div class="content">
+    </header>
+    <main>
+      <section class="content">
         <form id="apiForm">
           <h1>Liberty County API Demo</h1>
           <div class="info-message">
@@ -24,7 +28,6 @@
               please make sure to enter it each time you use the app.
             </p>
           </div>
-
           <div class="input-group">
             <label for="apiKey">API Key:</label>
             <input type="password" id="apiKey" placeholder="Enter API Key..." />
@@ -37,14 +40,14 @@
               placeholder="Enter server command..."
             />
           </div>
-          <div class="input-group">
+          <!-- <div class="input-group">
             <label for="discordWebhook">Discord Webhook:</label>
             <input
               type="text"
               id="discordWebhook"
               placeholder="Enter Discord Webhook URL..."
             />
-          </div>
+          </div> -->
           <div class="button-group">
             <button type="button" onclick="getServerInfo()">Server Info</button>
             <button type="button" onclick="getServerPlayers()">
@@ -53,14 +56,11 @@
             <button type="button" onclick="submitServerCommand()">
               Submit Command
             </button>
-            <button type="button" onclick="getCommandLogs()">
-              Command Logs
-            </button>
           </div>
         </form>
         <div id="result" class="result"></div>
-      </div>
-    </div>
+      </section>
+    </main>
     <script src="./Scripts/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </body>

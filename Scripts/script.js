@@ -1,44 +1,103 @@
-let apiKeyInput, resultDiv;
-
 document.addEventListener("DOMContentLoaded", () => {
   apiKeyInput = document.getElementById("apiKey");
   resultDiv = document.getElementById("result");
   discordWebhookInput = document.getElementById("discordWebhook");
+
+  if (localStorage.getItem("dark-mode") === "enabled") {
+    document.body.classList.add("dark-mode");
+  }
 });
 
-function validateApiKey() {
-  const apiKey = apiKeyInput;
-
-  if (!apiKey) {
-    resultDiv.innerText = "Please enter an API key.";
-    return false;
+function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+  if (document.body.classList.contains("dark-mode")) {
+    localStorage.setItem("dark-mode", "enabled");
+  } else {
+    localStorage.removeItem("dark-mode");
   }
-
-  return true;
 }
 
-// Server info
+const BASE_URL = "https://api.policeroleplay.community/v1/server";
+
+function toggleDarkMode() {
+  document.body.classList.toggle("dark-mode");
+  if (document.body.classList.contains("dark-mode")) {
+    localStorage.setItem("dark-mode", "enabled");
+  } else {
+    localStorage.removeItem("dark-mode");
+  }
+}
 
 async function getServerInfo() {
-  if (!validateApiKey()) return;
-
+  const apiKey = apiKeyInput.value;
+  if (!apiKey) {
+    resultDiv.textContent = "Please enter the API Key";
+    return;
+  }
   try {
-    const response = await axios.get(
-      "https://api.policeroleplay.community/v1/server",
+    const response = await axios.get(BASE_URL, {
+      headers: {
+        "Server-Key": `${apiKey}`,
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(response.data);
+    const data = response.data;
+    resultDiv.innerHTML = formatServerInfo(data);
+  } catch (error) {
+    resultDiv.textContent = "Error to fetch info from your server";
+    console.error(error);
+  }
+}
+
+async function getServerPlayers() {
+  const apiKey = apiKeyInput.value;
+  if (!apiKey) {
+    resultDiv.textContent = "Please enter the API Key";
+    return;
+  }
+  try {
+    const response = await axios.get(`${BASE_URL}/players`, {
+      headers: {
+        "Server-Key": `${apiKey}`,
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(response.data);
+    const data = response.data;
+    if (data.length === 0) {
+      return (resultDiv.innerHTML = "No users online in your server");
+    }
+    resultDiv.innerHTML = formatServerPlayers(data);
+  } catch (error) {
+    resultDiv.textContent = "Error to fetch players from your server";
+    console.error(error);
+  }
+}
+
+async function submitServerCommand() {
+  const apiKey = apiKeyInput.value;
+  const serverCommand = document.getElementById("serverCommand").value;
+  if (!apiKey || !serverCommand) {
+    resultDiv.textContent = "Please enter the API key and server command.";
+    return;
+  }
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/command`,
+      { command: serverCommand },
       {
         headers: {
-          "server-key": apiKeyInput.value,
+          "Server-Key": `${apiKey}`,
           "Content-Type": "application/json",
         },
       }
     );
-
-    const data = response.data;
-
-    resultDiv.innerHTML = formatServerInfo(data);
+    console.log(response.data);
+    resultDiv.textContent = "Command submitted successfully";
   } catch (error) {
-    console.error("Error fetching server info:", error);
-    resultDiv.innerText = `Error fetching server info: ${error.response.data.message}`;
+    resultDiv.textContent = "Error to submit command to your server";
+    console.error(error);
   }
 }
 
@@ -55,165 +114,19 @@ function formatServerInfo(data) {
       data.AccVerifiedReq
     }<br>
     <strong>Team Balance:</strong> ${data.TeamBalance ? "Enabled" : "Disabled"}
-`;
-
+  `;
   return formattedData;
-}
-
-// Players info
-async function getServerPlayers() {
-  if (!validateApiKey()) return;
-
-  try {
-    const response = await axios.get(
-      "https://api.policeroleplay.community/v1/server/players",
-      {
-        headers: {
-          "server-key": apiKeyInput.value,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const data = response.data;
-
-    if (data.length === 0) {
-      resultDiv.innerText = "No players are currently connected to the server.";
-      return;
-    } else if (Array.isArray(data)) {
-      resultDiv.innerHTML = formatServerPlayers(data);
-    } else {
-      resultDiv.innerText = `Error: ${data.message}`;
-    }
-  } catch (error) {
-    console.error("Error fetching server players:", error);
-    resultDiv.innerText = `Error fetching server players: ${error.response.data.message}`;
-  }
 }
 
 function formatServerPlayers(data) {
-  const listItems = data.map((player) => {
-    return `<li><strong>${player.Player}</strong> - ${player.Permission}</li>`;
-  });
-
-  const formattedData = `<ul>${listItems.join("")}</ul>`;
-
-  return formattedData;
-}
-
-async function submitServerCommand() {
-  if (!validateApiKey()) return;
-
-  const command = document.getElementById("serverCommand").value;
-  if (!command) {
-    resultDiv.innerText = "Please enter a command.";
-    return;
-  }
-
-  try {
-    const response = await axios.post(
-      "https://api.policeroleplay.community/v1/server/command",
-      { command },
-      {
-        headers: {
-          "server-key": apiKeyInput.value,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const data = response.data;
-    resultDiv.innerText = data.message;
-  } catch (error) {
-    console.error("Error executing command:", error);
-    resultDiv.innerText = `Error executing command: ${error.response.data.message}`;
-  }
-}
-
-// Send Webhook whit commandLogs
-function validateDiscordWebhook() {
-  const webhookUrl = discordWebhookInput.value;
-
-  if (!webhookUrl) {
-    resultDiv.innerText = "Please enter a Discord webhook URL.";
-    return false;
-  }
-
-  // Puedes agregar más validaciones aquí según tus requisitos
-
-  return true;
-}
-
-async function getCommandLogs() {
-  if (!validateApiKey() || !validateDiscordWebhook()) return;
-
-  try {
-    // Obtener los commandLogs desde el API de LC
-    const response = await axios.get(
-      "https://api.policeroleplay.community/v1/server/commandlogs",
-      {
-        headers: {
-          "server-key": apiKeyInput.value,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const commandLogs = response.data;
-
-    if (commandLogs.length === 0) {
-      resultDiv.innerText = "No command logs available.";
-      return;
-    }
-
-    // Formatear los commandLogs
-    const formattedLogs = formatCommandLogs(commandLogs);
-
-    // Enviar a Discord via webhook
-    await sendToDiscordWebhook(formattedLogs);
-
-    resultDiv.innerText = "Command logs sent to Discord successfully.";
-  } catch (error) {
-    console.error("Error fetching command logs:", error);
-    resultDiv.innerText = `Error fetching command logs: ${error.response.data.message}`;
-  }
-}
-
-function formatCommandLogs(commandLogs) {
-  // Puedes personalizar este formato según tus necesidades
-  return commandLogs
-    .map((log) => {
-      return `Player: ${log.Player}, Timestamp: ${log.Timestamp}, Command: ${log.Command}`;
-    })
-    .join("\n");
-}
-
-async function sendToDiscordWebhook(formattedLogs) {
-  const webhookUrl = discordWebhookInput.value;
-
-  try {
-    // Crear un embed con la información
-    const embed = {
-      title: "Command Logs",
-      description: formattedLogs,
-      color: 0x3498db, // Puedes personalizar el color
-      timestamp: new Date(),
-    };
-
-    // Enviar a Discord con el embed
-    await axios.post(webhookUrl, { embeds: [embed] });
-  } catch (error) {
-    console.error("Error sending to Discord webhook:", error);
-    resultDiv.innerText = `Error sending to Discord webhook: ${error.message}`;
-  }
-}
-
-// Dark mode
-function toggleDarkMode() {
-  document.body.classList.toggle("dark-mode");
-  document.querySelector(".sidebar").classList.toggle("dark-mode");
-  document.querySelector(".container").classList.toggle("dark-mode");
-  document.querySelectorAll(".result").forEach((result) => {
-    result.classList.toggle("dark-mode");
-  });
+  return data
+    .map(
+      (player) => `
+    <strong>Player Name:</strong> ${player.Player}<br>
+    <strong>Team:</strong> ${player.Team}<br>
+    <strong>Permissions:</strong> ${player.Permission}<br>
+    <strong>Callsign:</strong> ${player.Callsign || "None"}<br>
+  `
+    )
+    .join("<br>");
 }
