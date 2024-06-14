@@ -22,10 +22,9 @@ body {
   justify-content: center;
   min-height: 100vh;
   transition: background-color 0.3s ease, color 0.3s ease;
-  /* overflow: hidden; */
   background-image: url("./Assets/back.jpg");
-  background-size: auto;
-  background-position: center;
+  background-size: cover; /* Ajusta el tamaño de la imagen para cubrir todo el fondo */
+  background-position: center center; /* Centra la imagen */
 }
 
 body.dark-mode {
@@ -34,9 +33,11 @@ body.dark-mode {
 }
 
 header {
-  width: auto;
+  width: auto; /* Ajusta automáticamente al contenido */
   display: flex;
   justify-content: center;
+  background-color: transparent;
+  padding: 10px;
 }
 
 .sidebar {
@@ -141,13 +142,12 @@ body.dark-mode input {
 
 button {
   background-color: var(--color-primary);
-  color: var(--color-dark-text);
+  color: white; /* Texto blanco para mejor visibilidad */
   padding: 12px 20px;
   border: none;
-  color: white;
-  border-radius: 14px;
+  border-radius: 14px; /* Borde redondeado */
   cursor: pointer;
-  font-size: medium;
+  font-size: medium; /* Tamaño de fuente ligeramente más grande */
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
